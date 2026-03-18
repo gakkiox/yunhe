@@ -1,35 +1,45 @@
 <template>
-  <div div v-if="visible" class="recom-overlay">
-    <div class="recom-dialog">
-      <div class="recom_li">
-        <div class="recom_h1" style="padding-bottom: 20px;">飞驰人生3</div>
+  <div div v-if="visible" class="modal-overlay">
+    <div class="modal-container">
+      <!-- 弹窗头部 -->
+      <div class="modal-header">
+        <h3 class="modal-title">资料详情</h3>
+        <button class="close-btn" @click="handelClose">×</button>
       </div>
-      <div class="recom_li">
-        <div class="recom_desc">File:</div>
-        <div class="recom_text">飞驰人生3</div>
+      <!-- 弹窗内容 -->
+      <div class="modal-body">
+        <div class="resource-card">
+          <div class="resource-item">
+            <span class="item-label">资料名称：</span>
+            <span class="item-value">{{ recomData.name }}</span>
+          </div>
+          <div class="resource-item">
+            <span class="item-label">存储类型：</span>
+            <span class="item-value">{{ recomData.pan_type }}</span>
+          </div>
+          <div class="resource-item">
+            <span class="item-label">链接地址：</span>
+            <div class="item-value">
+              <div class="link-row">
+                <span class="link-text" >{{ recomData.link }}</span>
+                <button class="copy-link-btn" @click="handleCopy">复制链接</button>
+              </div>
+            </div>
+          </div>
+          <div class="resource-item">
+            <span class="item-label">更新日期：</span>
+            <span class="item-value">{{ recomData.date }}</span>
+          </div>
+          <div class="resource-item">
+            <span class="item-label">资源状态：</span>
+            <span class="item-value">有效</span>
+          </div>
+        </div>
       </div>
-      <div class="recom_li">
-        <div class="recom_desc">分享时间：</div>
-        <div class="recom_text">2026-02-10 17:50:26</div>
+      <!-- 弹窗底部 -->
+      <div class="modal-footer">
+        <button class="confirm-btn" @click="handelClose">关闭</button>
       </div>
-      <div class="recom_li">
-        <div class="recom_desc">网盘类型：</div>
-        <div class="recom_text">百度网盘</div>
-      </div>
-      <div class="recom_li">
-        <div class="recom_desc">链接：</div>
-        <div class="recom_link">https://pan.baidu.com/dshjkdhskj</div>
-        <div class="recom_copy">复制</div>
-      </div>
-      <div class="recom_action">
-        <button class="login-button">
-          访问链接
-        </button>
-        <button class="login-button" @click="handelClose">
-          关闭
-        </button>
-      </div>
-
     </div>
   </div>
 </template>
@@ -46,118 +56,243 @@ const props = defineProps({
     required: true
   }
 })
+const copySuccess = ref(false);
+let copyAnState = false;
+const recomData = reactive({
+  name: "",
+  pan_type: "",
+  link: "",
+  date: "",
+  s_id: ""
+})
 // TODO 完成子组件数据展示
 const emit = defineEmits(['colseRecomDialog'])
-const handelClose = () =>{
-emit('colseRecomDialog', false) // 传递要修改的新值
+const handelClose = () => {
+  emit('colseRecomDialog', false) // 传递要修改的新值
 }
+const handleCopy = () => {
+  if (copyAnState) {
+    return;
+  }
+  copyAnState = true;
+  navigator.clipboard.writeText(recomData.link);
+  copySuccess.value = true;
+  setTimeout(() => {
+    copySuccess.value = false;
+    copyAnState = false;
+  }, 1500);
+}
+const handleOpenLink = () => {
+  window.open(recomData.link, '_blank', 'noopener,noreferrer');
+}
+watch(() => props.visible, (newVal) => {
+  if (newVal) {
+    let recom = window.recom_list.find(item => item.s_id === props.sid)
+    Object.assign(recomData, recom);
+  }
+});
 
 </script>
 
 <style scoped>
-.recom-overlay {
+/* 弹窗遮罩层 */
+.modal-overlay {
   position: fixed;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 9999;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.recom-dialog {
-  background: hsl(var(--background));
-  border-radius: 12px;
-  padding: 2rem;
-  width: 90%;
-  max-width: 800px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease-out;
-  border: 1px solid hsl(var(--border));
-}
-
-.recom_h1 {
-  font-size: 32px;
-  line-height: 44px;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-weight: 600;
-  margin: 0;
-}
-
-.recom_li {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
-  align-items: flex-start;
-  margin-bottom: 10px;
+  z-index: 9999;
+  transition: all 0.3s ease;
 }
 
-.recom_desc {
-  font-size: 14px;
-  font-weight: 400;
-  color: #1c1f239e;
-  min-width: 80px;
-  flex-shrink: 0;
-  user-select: none;
+/* 弹窗显示状态 */
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.recom_text {
-  font-size: 14px;
+/* 弹窗容器 */
+.modal-container {
+  background-color: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
 }
 
-.recom_link {
-  font-size: 14px;
-  font-weight: 400;
-  color: #0064fa;
-  cursor: pointer;
-  text-decoration: underline;
+.modal-overlay.active .modal-container {
+  transform: scale(1);
 }
 
-.recom_copy {
-  font-size: 14px;
-  font-weight: 400;
-  color: #3bb346;
-  margin-left: 8px;
+/* 弹窗头部 */
+.modal-header {
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-
-.recom_action {
-  margin-top: 20px;
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.login-button {
-  padding: 0.75rem 1.5rem;
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f1f3f5;
   border: none;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+/* 弹窗内容区 */
+.modal-body {
+  padding: 24px 20px;
+}
+
+/* 资料卡片 */
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resource-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.item-label {
+  min-width: 80px;
+  font-size: 14px;
+  color: #6b7280;
   font-weight: 500;
+  padding-top: 2px;
+}
+
+.item-value {
+  flex: 1;
+  font-size: 15px;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+/* 链接展示行 */
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.link-text {
+  flex: 1;
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-link-btn {
+  padding: 6px 12px;
+  background-color: #1677ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 0.5rem;
-  margin-right: 10px;
 }
 
-.login-button:hover:not(:disabled) {
-  background: hsl(var(--primary) / 0.9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px hsla(var(--primary), 0.3);
+.copy-link-btn:hover {
+  background-color: #0958d9;
 }
 
-.login-button:active:not(:disabled) {
-  transform: translateY(0);
+/* 弹窗底部 */
+.modal-footer {
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
-.login-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.confirm-btn {
+  padding: 8px 20px;
+  background-color: #1677ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #0958d9;
+}
+
+/* 复制成功提示 */
+.copy-tooltip {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1001;
+}
+
+.copy-tooltip.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+@media (max-width: 768px) {
+  .link-row {
+    flex-wrap: wrap;
+    flex-direction: column; 
+  }
+  .link-text{
+    display: block;
+    max-width: 170px;
+  }
 }
 </style>

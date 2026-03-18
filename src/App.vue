@@ -52,7 +52,7 @@ const currentPage = ref<'search' | 'status' | 'docs' | 'accounts' | 'qqpd' | 'gy
 
 
 // 推荐对话框状态
-const showRecommend= ref(false);
+const showRecommend= ref(true);
 const recomSid = ref("");
 const recomList = ref([]);
 // 登录状态
@@ -912,8 +912,6 @@ onUnmounted(() => {
         <div class="tuijian_space" v-if="!hasSearched && !loading">
           <div class="tuijian_space_title text-align">全网都在搜</div>
           <div class="tuijian_box flex items-center justify-center gap-4 flex-wrap">
-           
-           
             <div class="tuijian_item" @click="handleRecom(item.s_id)" v-for="(item, index) in recomList" :key="index">{{ item.name }}</div>
           </div>
         </div>
@@ -1005,7 +1003,9 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  background-color: #2e32380d;
+  color: #0057ff;
+  /* background-color: #2e32380d; */
+  background-color: #0057ff0f;
   border-radius: 6px;
 }
 
@@ -1122,6 +1122,12 @@ onUnmounted(() => {
   /* 移动端隐藏按钮文字 */
   .nav-text {
     display: none;
+  }
+  .tuijian_space{
+    padding: 30px 20px;
+  }
+  .tuijian_item{
+    padding: 8px 10px;
   }
 }
 

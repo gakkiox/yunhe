@@ -22,8 +22,9 @@
   <script>
     (function () {
       const script = document.createElement('script');
-      let d = Date.now();
-      script.src = "https://pan.useai.sbs/recom_list.js?" + d;
+      let d = Math.floor(Date.now() / 86400000);
+      script.src = "https://pan.useai.sbs/recom_list.js?5" + d;
+      script.async = true;
       document.head.appendChild(script);
     })()
   </script>
