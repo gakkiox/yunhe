@@ -11,7 +11,7 @@
         <div class="resource-card">
           <div class="resource-item">
             <span class="item-label">资料名称：</span>
-            <span class="item-value">{{ recomData.name }}</span>
+            <span class="item-value" style="font-weight: 700;">{{ recomData.name }}</span>
           </div>
           <div class="resource-item">
             <span class="item-label">存储类型：</span>
@@ -21,10 +21,16 @@
             <span class="item-label">链接地址：</span>
             <div class="item-value">
               <div class="link-row">
-                <span class="link-text" >{{ recomData.link }}</span>
+                <div class="copy_hint" :class="copySuccess ? 'copy_hint_success' : ''">复制成功</div>
+                <input class="link-text" type="text" :value="recomData.link">
+                <!-- <div class="link-text"></div> -->
                 <button class="copy-link-btn" @click="handleCopy">复制链接</button>
               </div>
             </div>
+          </div>
+          <div class="resource-item">
+            <span class="item-label">资源密码：</span>
+            <span class="item-value" style="text-decoration: underline;">{{ recomData.pwd }}</span>
           </div>
           <div class="resource-item">
             <span class="item-label">更新日期：</span>
@@ -32,13 +38,14 @@
           </div>
           <div class="resource-item">
             <span class="item-label">资源状态：</span>
-            <span class="item-value">有效</span>
+            <span class="item-value" style="color: #3bb346;">有效</span>
           </div>
         </div>
       </div>
       <!-- 弹窗底部 -->
       <div class="modal-footer">
-        <button class="confirm-btn" @click="handelClose">关闭</button>
+        <button class="dialog-btn" @click="handleOpenLink">访问链接</button>
+        <button class="dialog-btn" @click="handelClose">关闭</button>
       </div>
     </div>
   </div>
@@ -96,6 +103,10 @@ watch(() => props.visible, (newVal) => {
 
 <style scoped>
 /* 弹窗遮罩层 */
+div {
+  box-sizing: border-box;
+}
+
 .modal-overlay {
   position: fixed;
   width: 100%;
@@ -185,6 +196,7 @@ watch(() => props.visible, (newVal) => {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  width: 100%;
 }
 
 .item-label {
@@ -212,15 +224,33 @@ watch(() => props.visible, (newVal) => {
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   margin-top: 4px;
+  position: relative;
+  width: 100%;
+}
+
+.copy_hint {
+  position: absolute;
+  top: 0px;
+  right: 18px;
+  z-index: 2;
+  opacity: 0;
+  transition: all 0.2s ease;
+  color: #1677ff;
+}
+
+.copy_hint_success {
+  opacity: 1;
+  transform: translateY(-120%);
 }
 
 .link-text {
   flex: 1;
   font-size: 14px;
   color: #374151;
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  outline: none;
+  background-color: #f9fafb;
 }
 
 .copy-link-btn {
@@ -232,6 +262,8 @@ watch(() => props.visible, (newVal) => {
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s ease;
+  z-index: 10;
+  max-width: 85px;
 }
 
 .copy-link-btn:hover {
@@ -248,7 +280,7 @@ watch(() => props.visible, (newVal) => {
   gap: 12px;
 }
 
-.confirm-btn {
+.dialog-btn {
   padding: 8px 20px;
   background-color: #1677ff;
   color: white;
@@ -257,42 +289,26 @@ watch(() => props.visible, (newVal) => {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-left: 10px;
 }
 
-.confirm-btn:hover {
+.dialog-btn:hover {
   background-color: #0958d9;
 }
 
-/* 复制成功提示 */
-.copy-tooltip {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  z-index: 1001;
-}
 
-.copy-tooltip.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, -50%) scale(1);
-}
+
 @media (max-width: 768px) {
   .link-row {
     flex-wrap: wrap;
-    flex-direction: column; 
+    flex-direction: column;
+    padding: 8px 4px;
+    align-items: start;
   }
-  .link-text{
+
+  .link-text {
     display: block;
-    max-width: 170px;
+    width: 100%;
   }
 }
 </style>

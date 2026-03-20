@@ -52,7 +52,7 @@ const currentPage = ref<'search' | 'status' | 'docs' | 'accounts' | 'qqpd' | 'gy
 
 
 // 推荐对话框状态
-const showRecommend= ref(true);
+const showRecommend= ref(false);
 const recomSid = ref("");
 const recomList = ref([]);
 // 登录状态
