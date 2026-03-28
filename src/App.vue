@@ -912,7 +912,7 @@ onUnmounted(() => {
         <div class="tuijian_space" v-if="!hasSearched && !loading">
           <div class="tuijian_space_title text-align">全网都在搜</div>
           <div class="tuijian_box flex items-center justify-center gap-4 flex-wrap">
-            <div class="tuijian_item" @click="handleRecom(item.s_id)" v-for="(item, index) in recomList" :key="index">{{ item.name }}</div>
+            <div class="tuijian_item" @click="handleRecom(item.s_id)" v-for="(item, index) in recomList" :key="index">{{ item.short_name }}</div>
           </div>
         </div>
 

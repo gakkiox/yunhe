@@ -199,3 +199,16 @@ docker run -d \
     ├── fullchain.pem              # 完整证书链
     └── privkey.pem                # 私钥
 ```
+
+{
+  "id": "art_10086",
+  "title": "网页模板中文章的核心属性设计与实践",
+  "summary": "本文讲解网页模板中文章模块的常见属性，帮助开发者快速搭建规范结构。",
+  "content": "网页开发中，文章属性需兼顾展示和SEO...",
+  "tags": "网页模板,文章属性,JSON示例,前端开发",
+  "createTime": "2026-03-19",
+  "coverImage": "https://example.com/images/cover.jpg",
+  "viewCount": 2589,
+  "author": "Article Author",
+  "likeCount": 126,
+}
