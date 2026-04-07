@@ -21,26 +21,31 @@
   <meta property="og:image" content="/logo.png">
   <script>
     (function () {
-      const script = document.createElement('script');
-      let d = Math.floor(Date.now() / 86400000);
-      let src = 'https://pan.useai.sbs/recom_list.js?';
-      if (window.location.href.includes('pan.useai.sbs')) {
-        src = '/recom_list.js?'
+      function addScript(script_name) {
+        let script = document.createElement('script');
+        let d = Math.floor(Date.now() / 86400000);
+        let src = `https://pan.useai.sbs/${script_name}.js?`;
+        if (window.location.href.includes('pan.useai.sbs')) {
+          src = `/${script_name}.js?`
+        }
+        script.src = src + d + "0";
+        script.async = true;
+        document.head.appendChild(script);
+        script = null;
       }
-      script.src = src + d +"0";
-      script.async = true;
-      document.head.appendChild(script);
+      addScript("recom_list");
+      addScript("source_data");
     })()
   </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-73C1BVSC28"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-73C1BVSC28"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-73C1BVSC28');
-</script>
+    gtag('config', 'G-73C1BVSC28');
+  </script>
 
 </head>
 

@@ -213,13 +213,8 @@ const getDiskName = (type: string) => {
 <template>
   <div class="results-wrapper">
     <!-- 初始状态 -->
-    <div v-if="showInitialState" class="empty-state">
-      <div class="empty-icon">
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-        </svg>
-      </div>
-      <p class="empty-title">输入关键词开始搜索</p>
+    <div v-if="showInitialState">
+
     </div>
     
     <!-- 搜索中状态 -->
