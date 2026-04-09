@@ -13,7 +13,8 @@ import AccountCenter from '@/components/AccountCenter.vue';
 import GyingManager from '@/components/GyingManager.vue';
 import WeiboManager from '@/components/WeiboManager.vue';
 import RecomDialog from '@/components/RecomDialog.vue';
-
+import SourceTab from '@/components/SourceTab.vue';
+import "./assets/source_data.js"
 // 后端健康状态缓存（应用启动时获取一次）
 const backendHealth = ref<HealthStatus | null>(null);
 
@@ -38,6 +39,7 @@ const secondSearchTimeout = ref<number | null>(null);
 const thirdSearchTimeout = ref<number | null>(null);
 const fourthSearchTimeout = ref<number | null>(null);
 const lastSearchParams = ref<SearchParams | null>(null);
+const searchFormRef = ref<typeof SearchForm | null>(null);
 
 // 是否已经执行过搜索
 const hasSearched = ref(false);
@@ -752,6 +754,9 @@ const handelCloseRecom = () => {
   showRecommend.value = false;
   recomSid.value  = "";
 }
+const handleSearchBySource = (title: string) => {
+  searchFormRef.value?.fntest(title);
+} 
 // 组件加载时初始化
 onMounted(async () => {
   // 首先初始化后端健康状态（只调用一次）
@@ -882,7 +887,7 @@ onUnmounted(() => {
 
         <!-- 搜索表单 -->
         <div class="mb-6">
-          <SearchForm :backend-health="backendHealth" @search="handleSearch" @search-complete="handleSearchComplete" />
+          <SearchForm ref="searchFormRef" :backend-health="backendHealth" @search="handleSearch" @search-complete="handleSearchComplete" />
         </div>
 
         <!-- 搜索统计 -->
@@ -909,13 +914,9 @@ onUnmounted(() => {
             :isActivelySearching="isActivelySearching" />
         </div>
         <!-- 推荐内容 -->
-        <div class="tuijian_space" v-if="!hasSearched && !loading">
-          <div class="tuijian_space_title text-align">全网都在搜</div>
-          <div class="tuijian_box flex items-center justify-center gap-4 flex-wrap">
-            <div class="tuijian_item" @click="handleRecom(item.s_id)" v-for="(item, index) in recomList" :key="index">{{ item.short_name }}</div>
-          </div>
+        <div v-if="!hasSearched && !loading">
+          <SourceTab @searchBySource="handleSearchBySource" />
         </div>
-
       </div>
 
       <!-- 配置页面 -->

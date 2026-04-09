@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted,onUnmounted } from 'vue';
 import type { SearchParams } from '@/api';
 import type { HealthStatus } from '@/api';
 import type { FilterConfig } from '@/types';
@@ -131,6 +131,13 @@ const handleSearch = () => {
     // 不再触发searchComplete事件
   }, 2000);
 };
+const fntest = (title: string) => {
+  keyword.value = title;
+  handleSearch();
+}
+defineExpose({
+  fntest
+})
 </script>
 
 <template>
