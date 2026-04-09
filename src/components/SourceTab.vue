@@ -81,19 +81,16 @@ const handleClick = (item) => {
       >
         <!-- 海报 -->
         <div class="movie-poster">
-          <img :src="item.pic.normal" :alt="item.title" />
+          <img :src="item.pic.pan" :alt="item.title" />
         </div>
         
         <!-- 信息 -->
         <div class="movie-info">
-          <h3 class="movie-title">{{ item.title }}</h3>
-          <div class="movie-rating">
-            <span class="rating-value">{{ item.rating.value.toFixed(1) }}</span>
-            <span class="rating-count">({{ item.rating.count.toLocaleString() }})</span>
+          <div>
+            <h3 class="movie-title">{{ item.title }}</h3>
           </div>
           <div class="movie-director">
-            <span class="director-label">导演：</span>
-            <span class="director-name">{{ extractDirector(item.card_subtitle) }}</span>
+            <span class="director-label" :title="item.card_subtitle">导演：{{ extractDirector(item.card_subtitle) }}</span>
           </div>
         </div>
       </div>
@@ -171,7 +168,7 @@ const handleClick = (item) => {
 }
 
 .movie-info {
-  padding: 12px;
+  padding: 5px;
 }
 
 .movie-title {
@@ -209,6 +206,8 @@ const handleClick = (item) => {
 .director-label {
   font-weight: 500;
   color: #6b7280;
+  white-space: nowrap;    /* 强制不换行 */
+  overflow: hidden; 
 }
 
 .director-name {

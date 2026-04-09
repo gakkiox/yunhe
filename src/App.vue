@@ -14,7 +14,6 @@ import GyingManager from '@/components/GyingManager.vue';
 import WeiboManager from '@/components/WeiboManager.vue';
 import RecomDialog from '@/components/RecomDialog.vue';
 import SourceTab from '@/components/SourceTab.vue';
-import "./assets/source_data.js"
 // 后端健康状态缓存（应用启动时获取一次）
 const backendHealth = ref<HealthStatus | null>(null);
 
