@@ -53,9 +53,8 @@ const currentPage = ref<'search' | 'status' | 'docs' | 'accounts' | 'qqpd' | 'gy
 
 
 // 推荐对话框状态
-const showRecommend= ref(false);
+const showRecommend = ref(false);
 const recomSid = ref("");
-const recomList = ref([]);
 // 登录状态
 const showLogin = ref(false);
 const isAuthenticated = ref(false);
@@ -745,27 +744,44 @@ const handleForceRefresh = () => {
     handleSearch({ ...lastSearchParams.value });
   }
 };
-const handleRecom = (id:any) => {
+
+// 检测URL中是否存在search_word参数
+const checkSearchWordParam = () => {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchWord = urlParams.get('search_word');
+    if (searchWord) {
+      handleSearchBySource(searchWord);
+      console.log('searchWord:', searchWord);
+    }
+  } catch (error) {
+    console.error('解析URL参数失败:', error);
+  }
+};
+const handleRecom = (id: any) => {
   recomSid.value = id;
- showRecommend.value = true;
+  showRecommend.value = true;
 }
 const handelCloseRecom = () => {
   showRecommend.value = false;
-  recomSid.value  = "";
+  recomSid.value = "";
 }
 const handleSearchBySource = (title: string) => {
-  searchFormRef.value?.fntest(title);
-} 
+  searchFormRef.value?.handleSearchByTitle(title);
+}
 // 组件加载时初始化
 onMounted(async () => {
   // 首先初始化后端健康状态（只调用一次）
   await initBackendHealth();
-  recomList.value = Object.values(window.recom_list);
+
   // 然后初始化其他状态
   checkAuth();
   checkQQPDPlugin();
   checkGyingPlugin();
   checkWeiboPlugin();
+
+  // 检查URL中是否存在search_word参数
+  checkSearchWordParam();
 
   // 监听事件
   window.addEventListener('auth:required', handleAuthRequired);
@@ -784,7 +800,7 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen bg-background text-foreground transition-colors duration-300 flex flex-col">
-   
+
     <!-- 推荐项目对话框 -->
     <RecomDialog :sid="recomSid" v-model:visible="showRecommend" @colseRecomDialog="handelCloseRecom" />
     <!-- 登录对话框 -->
@@ -820,37 +836,6 @@ onUnmounted(() => {
             <span class="nav-text">搜索</span>
           </button>
 
-          <!-- <button 
-            @click="switchToStatus"
-            class="nav-button"
-            :class="{ 'active': currentPage === 'status' }"
-            title="配置"
-          >
-            <span class="nav-icon">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-            </span>
-            <span class="nav-text">配置</span>
-          </button> -->
-          <!-- <button 
-            @click="switchToDocs"
-            class="nav-button"
-            :class="{ 'active': currentPage === 'docs' }"
-            title="API文档"
-          >
-            <span class="nav-icon">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-    
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 2v6h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        
-                <text x="12" y="15" font-size="6" font-weight="bold" text-anchor="middle" fill="currentColor" font-family="Arial, sans-serif">API</text>
-              </svg>
-            </span>
-            <span class="nav-text">API</span>
-          </button> -->
           <button v-if="hasAccountServices" @click="switchToAccounts" class="nav-button"
             :class="{ 'active': currentPage === 'accounts' || currentPage === 'qqpd' || currentPage === 'gying' || currentPage === 'weibo' }"
             title="账号管理">
@@ -886,7 +871,8 @@ onUnmounted(() => {
 
         <!-- 搜索表单 -->
         <div class="mb-6">
-          <SearchForm ref="searchFormRef" :backend-health="backendHealth" @search="handleSearch" @search-complete="handleSearchComplete" />
+          <SearchForm ref="searchFormRef" :backend-health="backendHealth" @search="handleSearch"
+            @search-complete="handleSearchComplete" />
         </div>
 
         <!-- 搜索统计 -->
@@ -953,7 +939,8 @@ onUnmounted(() => {
     <footer class="border-t border-border bg-background/50 backdrop-blur-sm mt-auto">
       <div class="container mx-auto px-4 py-4">
         <div class="text-sm text-muted-foreground flex items-center justify-center ">
-          <div style="margin-bottom:4px;text-align: center;">声明：本站内容由网络爬虫自动抓取。本站不储存、复制、传播任何文件，不做任何盈利，仅作个人公益学习，请勿非法&商业传播，如有侵权，请反馈告知删除。</div>
+          <div style="margin-bottom:4px;text-align: center;">
+            声明：本站内容由网络爬虫自动抓取。本站不储存、复制、传播任何文件，不做任何盈利，仅作个人公益学习，请勿非法&商业传播，如有侵权，请反馈告知删除。</div>
         </div>
 
         <div class="flex items-center justify-center gap-4 text-sm text-muted-foreground">
@@ -1123,10 +1110,12 @@ onUnmounted(() => {
   .nav-text {
     display: none;
   }
-  .tuijian_space{
+
+  .tuijian_space {
     padding: 30px 20px;
   }
-  .tuijian_item{
+
+  .tuijian_item {
     padding: 8px 10px;
   }
 }

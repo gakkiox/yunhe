@@ -131,12 +131,12 @@ const handleSearch = () => {
     // 不再触发searchComplete事件
   }, 2000);
 };
-const fntest = (title: string) => {
+const handleSearchByTitle = (title: string) => {
   keyword.value = title;
   handleSearch();
 }
 defineExpose({
-  fntest
+  handleSearchByTitle
 })
 </script>
 
@@ -148,18 +148,7 @@ defineExpose({
         <div class="relative flex flex-row items-center w-full">
           <div class="relative w-full">
             <!-- 筛选按钮（最左侧） -->
-            <button
-              type="button"
-              @click="showAdvanced = !showAdvanced"
-              :class="[
-                'advanced-toggle-left',
-                showAdvanced && 'active',
-                (includeKeywords.trim() || excludeKeywords.trim()) && 'has-filter'
-              ]"
-              title="高级筛选"
-            >
-              <FilterIcon :size="16" />
-            </button>
+
             <input
               v-model="keyword"
               type="text"

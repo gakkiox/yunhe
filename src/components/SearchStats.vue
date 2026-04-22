@@ -28,14 +28,14 @@ const diskTypeCount = computed(() => {
           <span class="text-sm text-muted-foreground">搜索结果</span>
           <span class="font-semibold text-foreground">{{ total.toLocaleString() }}</span>
         </div>
-        
+
         <!-- 网盘类型数量 -->
         <div class="flex items-center gap-2">
           <component :is="Icons.Folder()" class="w-4 h-4 text-muted-foreground" />
           <span class="text-sm text-muted-foreground">网盘类型</span>
           <span class="font-semibold text-foreground">{{ diskTypeCount }}</span>
         </div>
-        
+
         <!-- 搜索耗时 -->
         <div v-if="searchTime" class="flex items-center gap-2">
           <component :is="Icons.Clock()" class="w-4 h-4 text-muted-foreground" />
@@ -44,12 +44,9 @@ const diskTypeCount = computed(() => {
         </div>
       </div>
       <!-- 强制刷新按钮 -->
-      <button
-        :disabled="loading"
-        @click="$emit('force-refresh')"
-        title="强制刷新"
+      <button :disabled="loading" @click="$emit('force-refresh')" title="强制刷新"
         class="ml-4 flex items-center justify-center w-9 h-9 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground transition-colors focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
-        <component :is="Icons.Refresh()" class="w-5 h-5"/>
+        <component :is="Icons.Refresh()" class="w-5 h-5" />
       </button>
     </div>
   </div>
@@ -101,14 +98,14 @@ const diskTypeCount = computed(() => {
     flex-wrap: wrap;
     justify-content: space-around;
   }
-  
+
   .stats-divider {
     display: none;
   }
-  
+
   .stats-item {
     padding: 0.5rem;
     align-items: center;
   }
 }
-</style> 
+</style>

@@ -17,11 +17,37 @@ const extractDirector = (cardSubtitle) => {
 };
 
 // 加载数据
+const loadSourceData = async () => {
+  try {
+    // 发起网络请求获取数据
+    const response = await fetch('/source_data.js?timestamp=' + Date.now());
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // 获取脚本内容
+    const scriptContent = await response.text();
+
+    // 执行脚本，将数据加载到全局变量
+    eval(scriptContent);
+
+    // 从全局变量获取数据
+    if (window.movie_data) {
+      movieData.value = window.movie_data.data.items;
+    }
+    if (window.drama_data) {
+      dramaData.value = window.drama_data.data.items;
+    }
+    if (window.variety_data) {
+      varietyData.value = window.variety_data.data.items;
+    }
+  } catch (error) {
+    console.error('加载source_data.js失败:', error);
+  }
+};
+
 onMounted(() => {
-  // 从全局变量获取数据
-    movieData.value = window.movie_data.data.items;
-    dramaData.value = window.drama_data.data.items;
-    varietyData.value = window.variety_data.data.items;
+  loadSourceData();
 });
 
 // 获取当前激活的数据
@@ -40,7 +66,7 @@ const getCurrentData = () => {
 const emit = defineEmits(['searchBySource'])
 // 点击事件处理
 const handleClick = (item) => {
-   emit('searchBySource', item.title) // 传递要修改的新值
+  emit('searchBySource', item.title) // 传递要修改的新值
 };
 </script>
 
@@ -48,42 +74,25 @@ const handleClick = (item) => {
   <div class="source-tab">
     <!-- 标签切换 -->
     <div class="tabs">
-      <button 
-        class="tab-button" 
-        :class="{ active: activeTab === 'movie' }"
-        @click="activeTab = 'movie'"
-      >
+      <button class="tab-button" :class="{ active: activeTab === 'movie' }" @click="activeTab = 'movie'">
         电影
       </button>
-      <button 
-        class="tab-button" 
-        :class="{ active: activeTab === 'drama' }"
-        @click="activeTab = 'drama'"
-      >
+      <button class="tab-button" :class="{ active: activeTab === 'drama' }" @click="activeTab = 'drama'">
         剧集
       </button>
-      <button 
-        class="tab-button" 
-        :class="{ active: activeTab === 'variety' }"
-        @click="activeTab = 'variety'"
-      >
+      <button class="tab-button" :class="{ active: activeTab === 'variety' }" @click="activeTab = 'variety'">
         综艺
       </button>
     </div>
 
     <!-- 影视卡片列表 -->
     <div class="movie-grid">
-      <div 
-        v-for="item in getCurrentData()" 
-        :key="item.id"
-        class="movie-card"
-        @click="handleClick(item)"
-      >
+      <div v-for="item in getCurrentData()" :key="item.id" class="movie-card" @click="handleClick(item)">
         <!-- 海报 -->
         <div class="movie-poster">
           <img :src="item.pic.pan" :alt="item.title" />
         </div>
-        
+
         <!-- 信息 -->
         <div class="movie-info">
           <div>
@@ -206,8 +215,9 @@ const handleClick = (item) => {
 .director-label {
   font-weight: 500;
   color: #6b7280;
-  white-space: nowrap;    /* 强制不换行 */
-  overflow: hidden; 
+  white-space: nowrap;
+  /* 强制不换行 */
+  overflow: hidden;
 }
 
 .director-name {
@@ -234,4 +244,4 @@ const handleClick = (item) => {
     font-size: 12px;
   }
 }
-</style> 
+</style>

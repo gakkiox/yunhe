@@ -8,7 +8,6 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig(({ mode }) => {
   // 加载环境变量
   const env = loadEnv(mode, process.cwd(), '')
-
   return {
     plugins: [
       vue({
@@ -64,7 +63,7 @@ export default defineConfig(({ mode }) => {
         '/weibo': {
           target: env.VITE_API_BASE_URL || 'https://pan.useai.sbs/',
           changeOrigin: true
-        }
+        },
       }
     }
   }
@@ -86,13 +85,11 @@ async function replaceHtmlContent(htmlFilePath, overwrite = true) {
     // 4. 替换目标字符串：IUsWZevlnSDfRXk2 → <%- lis %>
     const targetStr = 'IUsWZevlnSDfRXk2';
     const replaceStr = '<%- lis %>';
-    const newHtmlContent = htmlContent.replace(new RegExp(targetStr, 'g'), replaceStr);
-
-    // 5. 检查是否有替换生效
-    if (newHtmlContent === htmlContent) {
-      console.log(`⚠️  文件中未找到需要替换的字符串 "${targetStr}"：${absolutePath}`);
-      return;
-    }
+    let htmlContent1 = htmlContent.replace(new RegExp(targetStr, 'g'), replaceStr);
+    // 4. 替换目标字符串：IUsWZevlnSDfRXk2 → <%- lis %>
+    const sourceStr = 'IRsWZevghE2nSDXdfs5';
+    const replacesourceStr = '<%- source_data %>';
+    const newHtmlContent = htmlContent1.replace(new RegExp(sourceStr, 'g'), replacesourceStr);
 
     // 6. 确定输出路径（覆盖原文件 / 输出新文件）
     const outputPath = overwrite 
